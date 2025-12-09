@@ -1,0 +1,23 @@
+font-size = 20
+font-style=bold
+
+shell-integration-features = no-cursor,sudo,no-title
+cursor-style = block
+
+# line height 1.15
+adjust-cell-height = 15%
+
+mouse-hide-while-typing = true
+
+# Twice the scroll speed
+mouse-scroll-multiplier = 2
+
+window-padding-balance = true
+window-save-state = always
+
+# other
+copy-on-select = clipboard
+
+
+shell-integration = zsh
+
