@@ -1,6 +1,8 @@
 font-size = 20
 font-style=bold
 
+theme = "tokyonight_moon"
+
 shell-integration-features = no-cursor,sudo,no-title
 cursor-style = block
 
@@ -14,6 +16,9 @@ mouse-scroll-multiplier = 2
 
 window-padding-balance = true
 window-save-state = always
+
+# key
+macos-option-as-alt = true
 
 # other
 copy-on-select = clipboard

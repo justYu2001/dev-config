@@ -6,34 +6,24 @@ local f = ls.function_node
 local sn = ls.snippet_node
 local t = ls.text_node
 
-local obj_match_pat = [[[%w_%d%.%[%]%{%}%"%'%:%,%s]+$]]
-local func_match_pat = [[[%w%.%_%%(%)%\"%\'%/%k%,%s]+$]]
-
-local function has_semi()
-  local line = vim.api.nvim_get_current_line()
-
-  return line:find(";")
-end
+local literal_match_pat = [[[%w_%d%.%[%]%{%}%"%'%:%,%s!?]+$]]
+local func_match_pat = [[[%w%.%_%%%-%[%]%(%)%\"%\'%/%k%,%s!?]+$]]
 
 return {
-  postfix({ trig = ".return", match_pattern = obj_match_pat }, {
+  postfix({ trig = ".return", match_pattern = literal_match_pat }, {
     t("return "),
     f(function(_, parent)
-      return parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1") .. (
-        has_semi() and "" or ";"
-      )
+      return parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1")
     end, {}),
     i(0),
   }),
 
-  postfix({ trig = ".const", match_pattern = obj_match_pat }, {
+  postfix({ trig = ".const", match_pattern = literal_match_pat }, {
     t("const "),
     i(1),
     t(" = "),
     f(function(_, parent)
-      return parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1") .. (
-        has_semi() and "" or ";"
-      )
+      return parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1")
     end, {}),
     i(0),
   }),
@@ -45,9 +35,7 @@ return {
     t("const { "),
     i(0),
     f(function(_, parent)
-      return " } = " .. parent.snippet.env.POSTFIX_MATCH .. (
-        has_semi() and "" or ";"
-      )
+      return " } = " .. parent.snippet.env.POSTFIX_MATCH
     end, {}),
   }),
 
@@ -65,9 +53,14 @@ return {
     t({"", "}"}),
   }),
 
-  postfix(".log", {
+  postfix({
+    trig = ".log",
+    match_pattern = func_match_pat
+  }, {
     f(function(_, parent)
-      return "console.log(" .. parent.snippet.env.POSTFIX_MATCH .. ");"
+      local match = parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1")
+
+      return "console.log(" .. match .. ")"
     end, {}),
     i(0),
   }),
@@ -81,7 +74,7 @@ return {
 
       content = content:gsub("^%s+", "")
 
-      return "await " .. content .. ";"
+      return "await " .. content
     end, {}),
     i(0),
   }),
