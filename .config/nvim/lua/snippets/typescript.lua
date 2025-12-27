@@ -6,11 +6,10 @@ local f = ls.function_node
 local sn = ls.snippet_node
 local t = ls.text_node
 
-local literal_match_pat = [[[%w_%d%.%[%]%{%}%"%'%:%,%s!?]+$]]
-local func_match_pat = [[[%w%.%_%%%-%[%]%(%)%\"%\'%/%k%,%s!?]+$]]
+local match_pat = [[[%w%s%p]+$]]
 
 return {
-  postfix({ trig = ".return", match_pattern = literal_match_pat }, {
+  postfix({ trig = ".return", match_pattern = match_pat }, {
     t("return "),
     f(function(_, parent)
       return parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1")
@@ -18,7 +17,7 @@ return {
     i(0),
   }),
 
-  postfix({ trig = ".const", match_pattern = literal_match_pat }, {
+  postfix({ trig = ".const", match_pattern = match_pat }, {
     t("const "),
     i(1),
     t(" = "),
@@ -30,7 +29,7 @@ return {
 
   postfix({
     trig = ".dest",
-    match_pattern = func_match_pat
+    match_pattern = match_pat
   }, {
     t("const { "),
     i(0),
@@ -41,7 +40,7 @@ return {
 
   postfix({
     trig = ".if",
-    match_pattern = "[%w%.%_%s%(%)%&%|%!%=>%<]+$"
+    match_pattern = match_pat
   }, {
     f(function(_, parent)
       local match = parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1")
@@ -55,7 +54,7 @@ return {
 
   postfix({
     trig = ".log",
-    match_pattern = func_match_pat
+    match_pattern = match_pat
   }, {
     f(function(_, parent)
       local match = parent.snippet.env.POSTFIX_MATCH:gsub("^%s*(.-)%s*$", "%1")
@@ -67,7 +66,7 @@ return {
 
   postfix({ 
     trig = ".await", 
-    match_pattern = func_match_pat
+    match_pattern = match_pat
   }, {
     f(function(_, parent)
       local content = parent.snippet.env.POSTFIX_MATCH
