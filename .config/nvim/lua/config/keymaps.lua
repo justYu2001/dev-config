@@ -4,22 +4,36 @@
 
 vim.keymap.set("i", "jj", "<Esc>")
 vim.keymap.set("v", "vv", "<Esc>")
-vim.keymap.set("n", "zh", "^")
-vim.keymap.set("n", "zl", "$")
+
+vim.keymap.set({"n", "x", "o"}, "zh", "^")
+vim.keymap.set({"n", "x", "o"}, "zl", "$")
 
 vim.keymap.set('n', '<D-b>', vim.lsp.buf.definition, { desc = "LSP Go to Definition" })
+
+vim.keymap.set({ 'n', 'v' }, '<A-CR>', vim.lsp.buf.code_action, { desc = 'LSP Code Action' })
+
+vim.keymap.set("n", "zfc", function()
+  vim.lsp.buf.code_action({
+    context = { only = { "source.addMissingImports.ts", "source.removeUnusedImports.ts" } },
+    apply = true,
+  })
+
+  vim.lsp.buf.code_action({
+    context = { only = { "source.fixAll.eslint" } },
+    apply = true,
+  })
+
+  require("conform").format({
+    formatters = { "prettier" },
+    lsp_fallback = true,
+  })
+end, { desc = "LSP: Fix imports, ESLint and Format" })
 
 -- Comment
 vim.keymap.set("n", "<D-/>", "gcc", { remap = true })
 
 vim.keymap.set("n", "<M-d>", "yyp", { desc = "Duplicate line" })
 vim.keymap.set("v", "<D-d>", "yPgv=gv", { desc = "Duplicate selection" })
-
--- Go to next error
-vim.keymap.set("n", "zn", vim.diagnostic.goto_next)
-
--- Go to previous error
-vim.keymap.set("n", "zk", vim.diagnostic.goto_prev)
 
 -- Refactoring
 
@@ -42,3 +56,19 @@ vim.keymap.set("v", "zec", function()
     vim.api.nvim_input(":IncRename ")
   end, 100)
 end, { desc = "Extract local constant and rename" })
+
+vim.keymap.set('n', 'zri', function()
+  vim.lsp.buf.code_action({
+    filter = function(action)
+      return action.title:lower():match("inline") 
+    end,
+    apply = true
+  })
+end, { desc = "LSP: Inline Variable" })
+
+vim.keymap.set(
+  'n',
+  'zrb',
+  '"adi{va{"ap:s/return //e<CR>:s/;//e<CR>',
+  { silent = true, desc = "Remove braces for an arrow function" }
+)
