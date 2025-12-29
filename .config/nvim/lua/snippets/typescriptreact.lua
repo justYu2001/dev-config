@@ -23,10 +23,7 @@ return {
     i(1),
     i(0)
   })),
-  postfix({
-    trig = ".state",
-    match_pattern = match_pat
-  }, {
+  postfix(".state", {
     t("const ["),
     i(1),
     t(", set"),

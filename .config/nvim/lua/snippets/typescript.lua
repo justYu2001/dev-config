@@ -1,4 +1,5 @@
 local ls = require("luasnip")
+local s = ls.snippet
 local postfix = require("luasnip.extras.postfix").postfix
 local i = ls.insert_node
 local d = ls.dynamic_node
@@ -9,6 +10,14 @@ local t = ls.text_node
 local match_pat = [[[%w%s%p]+$]]
 
 return {
+  s("exad", {
+    t("export { "), i(2), t(" as default } from \""), i(1), t("\";")
+  }),
+  s("arf", {
+    t("const "), i(1), t(" = ("), i(2), t(") => {"),
+    t({"", "  "}), i(0),
+    t({"", "};"}),
+  }),
   postfix({ trig = ".return", match_pattern = match_pat }, {
     t("return "),
     f(function(_, parent)

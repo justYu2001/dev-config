@@ -13,15 +13,7 @@ vim.keymap.set('n', '<D-b>', vim.lsp.buf.definition, { desc = "LSP Go to Definit
 vim.keymap.set({ 'n', 'v' }, '<A-CR>', vim.lsp.buf.code_action, { desc = 'LSP Code Action' })
 
 vim.keymap.set("n", "zfc", function()
-  vim.lsp.buf.code_action({
-    context = { only = { "source.addMissingImports.ts", "source.removeUnusedImports.ts" } },
-    apply = true,
-  })
-
-  vim.lsp.buf.code_action({
-    context = { only = { "source.fixAll.eslint" } },
-    apply = true,
-  })
+  vim.cmd("silent! LspEslintFixAll")
 
   require("conform").format({
     formatters = { "prettier" },
@@ -56,6 +48,20 @@ vim.keymap.set("v", "zec", function()
     vim.api.nvim_input(":IncRename ")
   end, 100)
 end, { desc = "Extract local constant and rename" })
+
+vim.keymap.set({ "n", "v" }, "zeg", function()
+  vim.lsp.buf.code_action({
+    filter = function(action)
+      local title = action.title:lower()
+      return title:match("extract") and title:match("constant") and title:match("module")
+    end,
+    apply = true,
+  })
+
+  vim.defer_fn(function()
+    vim.api.nvim_input(":IncRename ")
+  end, 100)
+end, { desc = "Extract global constant and rename" })
 
 vim.keymap.set('n', 'zri', function()
   vim.lsp.buf.code_action({
