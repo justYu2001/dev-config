@@ -10,6 +10,12 @@ local t = ls.text_node
 local match_pat = [[[%w%s%p]+$]]
 
 return {
+  s("imd", {
+    t("import { "), i(2), t(" } from \""), i(1), t("\";")
+  }),
+  s("imp", {
+    t("import "), i(2), t(" from \""), i(1), t("\";")
+  }),
   s("exad", {
     t("export { "), i(2), t(" as default } from \""), i(1), t("\";")
   }),

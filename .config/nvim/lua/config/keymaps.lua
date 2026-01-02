@@ -22,7 +22,7 @@ vim.keymap.set("n", "zfc", function()
 end, { desc = "LSP: Fix imports, ESLint and Format" })
 
 -- Comment
-vim.keymap.set("n", "<D-/>", "gcc", { remap = true })
+vim.keymap.set({ "n", "v" }, "<D-/>", "gcc", { remap = true })
 
 vim.keymap.set("n", "<M-d>", "yyp", { desc = "Duplicate line" })
 vim.keymap.set("v", "<D-d>", "yPgv=gv", { desc = "Duplicate selection" })
