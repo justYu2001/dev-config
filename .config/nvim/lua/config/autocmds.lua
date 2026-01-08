@@ -8,13 +8,12 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
 -- Format after using a snippet
-vim.api.nvim_create_autocmd("User", {
-  pattern = "LuaSnipPreExpand",
+vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
     vim.schedule(function()
       require("conform").format({
-	bufnr = 0,
-	lsp_fallback = true,
+	      bufnr = 0,
+	      lsp_fallback = true,
       })
     end)
   end,
